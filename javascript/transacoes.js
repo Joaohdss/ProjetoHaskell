@@ -1,27 +1,78 @@
-var data = require('./transacoes.json');
+var data = [];
 
-
-
+const getData = async () => {
+    const res = await fetch('./transacoes.json', { method: 'GET', mode: 'no-cors' });
+    res.json().then(res => data = res);
+};
 
 const functions = {
-filterTransaction : (filter) => data.filter(filter),
-filterByYearAndMonth : (year, month, transaction) =>  transaction.datas.year === year && (month ? transaction.datas.month === month : true),
-isIncomeOrExpense: (transaction) => !transaction.tipos.includes("SALDO_CORRENTE","APLICACAO","VALOR_APLICACAO") ,
-isIncome: (transaction) =>  isIncomeOrExpense(transaction) && transaction.valor > 0,
-isExpense: (transaction) => isIncomeOrExpense(transaction) && transaction.valor < 0,
-filterIncomes: (data) => data.filter(isIncome),
-filterExpenses: (data) => data.filter(isExpense),
-sum: (data) => data.reduce((acumulator , actual) => acumulator + actual.valor),
-getOver: (data) => sum(filterIncomes(data)) - sum(filterExpenses(data)),
-getInitialBalance: (data) => data.filter((transaction) => transaction.tipos.includes("SALDO_CORRENTE"))[0],
-getFinalBalance: (data) => getInitialBalance(data).valor + getOver(data),
+    filterTransaction: (filter) => data.filter(filter),
+    filterByYearAndMonth: (year, month, transaction) => transaction.datas.year === year && (month ? transaction.datas.month === month : true),
+    isIncomeOrExpense: (transaction) => !transaction.tipos.includes("SALDO_CORRENTE") && !transaction.tipos.includes("APLICACAO") && !transaction.tipos.includes("VALOR_APLICACAO"),
+    isIncome: (transaction) => functions.isIncomeOrExpense(transaction) && transaction.valor > 0,
+    isExpense: (transaction) => functions.isIncomeOrExpense(transaction) && transaction.valor < 0,
+    filterIncomes: (data) => data.filter(functions.isIncome),
+    filterExpenses: (data) => data.filter(functions.isExpense),
+    sum: (data) => data.reduce((acumulator, actual) => acumulator + actual.valor, 0),
+    getOver: (data) => functions.sum(functions.filterIncomes(data)) + functions.sum(functions.filterExpenses(data)),
+    getInitialBalance: (data) => data.filter((transaction) => transaction.tipos.includes("SALDO_CORRENTE"))[0],
+    getFinalBalance: (data) => functions.getInitialBalance(data).valor + functions.getOver(data),
+    getMaxOrMinBalance: (data, comparator) => data.reduce((acumulator, transaction) => {
 
-//getMaxBalance
+        const actualBalance = functions.isIncomeOrExpense(transaction) ? (acumulator.balance + transaction.valor) : acumulator.balance;
+        const maxOrMinBalance = comparator(actualBalance, acumulator.maxOrMinBalance) ? actualBalance : acumulator.maxOrMinBalance;
+        return { balance: actualBalance, maxOrMinBalance: maxOrMinBalance };
+    },
+        { balance: functions.getInitialBalance(data).valor, maxOrMinBalance: functions.getInitialBalance(data).valor }),
+
+    getFilterAverage: (data, filter) => {
+        dataFiltered = filter(data);
+        return functions.sum(dataFiltered) / dataFiltered.length;
+    },
+    getIncomesAverage: (data) => functions.getFilterAverage(data, functions.filterIncomes),
+    getExpensesAverage: (data) => functions.getFilterAverage(data, functions.filterExpenses),
+    getOversAverage: (data) => functions.getIncomesAverage(data) + functions.getExpensesAverage(data),
+
+    getCashFlow: (data) => {
+
+        const dataFiltered = data.filter(functions.isIncomeOrExpense);
+        const balance = [functions.getInitialBalance(data).valor];
+
+
+        const cashFlow = dataFiltered.map((transaction) => {
+            const date = transaction.datas;
+            balance.push(transaction.valor);
+            return { balance: balance.reduce((a, b) => a + b), day: date.dayOfMonth };
+        });
+
+        const cashFlowHistory = {}
+
+        cashFlow.forEach((transaction) => cashFlowHistory[transaction.day] = { dia: transaction.day, saldoFinalDoDia: transaction.balance });
+
+        return cashFlowHistory;
+
+    }
+
 }
 
-filterTransactionByYear = (year) => functions.filterTransaction((e) => functions.filterByYearAndMonth(year, null, e));
 
+// Interface
+
+filterTransactionByYear = (year) => functions.filterTransaction((e) => functions.filterByYearAndMonth(year, null, e));
 filterTransactionByYearAndMonth = (year, month) => functions.filterTransaction((e) => functions.filterByYearAndMonth(year, month, e));
+filterIncomes = (year, month) => functions.filterIncomes(filterTransactionByYearAndMonth(year, month));
+filterExpenses = (year, month) => functions.filterExpenses(filterTransactionByYearAndMonth(year, month));
+getOver = (year, month) => functions.getOver(filterTransactionByYearAndMonth(year, month));
+getFinalBalance = (year, month) => functions.getFinalBalance(filterTransactionByYearAndMonth(year, month));
+getMaxBalance = (year, month) => functions.getMaxOrMinBalance(filterTransactionByYearAndMonth(year, month), (a, b) => a > b),
+getMinBalance = (year, month) => functions.getMaxOrMinBalance(filterTransactionByYearAndMonth(year, month), (a, b) => a < b),
+getIncomesAverage = (year) => functions.getIncomesAverage(filterTransactionByYear(year));
+getExpensesAverage = (year) => functions.getExpensesAverage(filterTransactionByYear(year));
+getOversAverage = (year) => functions.getOversAverage(filterTransactionByYear(year));
+getCashFlow = (year, month) => functions.getCashFlow(filterTransactionByYearAndMonth(year, month));
+
+getData();
+
 
 
 
