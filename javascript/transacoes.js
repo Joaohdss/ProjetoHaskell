@@ -5,6 +5,8 @@ const getData = async () => {
     res.json().then(res => data = res);
 };
 
+getData();
+
 const functions = {
     filterTransaction: (filter) => data.filter(filter),
     filterByYearAndMonth: (year, month, transaction) => transaction.datas.year === year && (month ? transaction.datas.month === month : true),
@@ -26,7 +28,7 @@ const functions = {
         { balance: functions.getInitialBalance(data).valor, maxOrMinBalance: functions.getInitialBalance(data).valor }),
 
     getFilterAverage: (data, filter) => {
-        dataFiltered = filter(data);
+        const dataFiltered = filter(data);
         return functions.sum(dataFiltered) / dataFiltered.length;
     },
     getIncomesAverage: (data) => functions.getFilterAverage(data, functions.filterIncomes),
@@ -36,20 +38,18 @@ const functions = {
     getCashFlow: (data) => {
 
         const dataFiltered = data.filter(functions.isIncomeOrExpense);
-        const balance = [functions.getInitialBalance(data).valor];
+        const cashFlow = dataFiltered.reduce((acumulator, transaction) => {
 
-
-        const cashFlow = dataFiltered.map((transaction) => {
             const date = transaction.datas;
-            balance.push(transaction.valor);
-            return { balance: balance.reduce((a, b) => a + b), day: date.dayOfMonth };
-        });
+            const balance = acumulator.balance + transaction.valor;
+            const days = { ...acumulator.days };
+            days[date.dayOfMonth] = { dia: date.dayOfMonth, saldoFinalDoDia: balance };
 
-        const cashFlowHistory = {}
+            return { balance: balance, days: days };
+        }, { balance: functions.getInitialBalance(data).valor, days: {} });
 
-        cashFlow.forEach((transaction) => cashFlowHistory[transaction.day] = { dia: transaction.day, saldoFinalDoDia: transaction.balance });
 
-        return cashFlowHistory;
+        return cashFlow.days;
 
     }
 
@@ -70,9 +70,3 @@ getIncomesAverage = (year) => functions.getIncomesAverage(filterTransactionByYea
 getExpensesAverage = (year) => functions.getExpensesAverage(filterTransactionByYear(year));
 getOversAverage = (year) => functions.getOversAverage(filterTransactionByYear(year));
 getCashFlow = (year, month) => functions.getCashFlow(filterTransactionByYearAndMonth(year, month));
-
-getData();
-
-
-
-
