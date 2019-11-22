@@ -1,5 +1,7 @@
+module Controller where
 import ParserJson
 import Tipos
+import Data.List (groupBy)
 
 -- Checar Ano
 checarPorAno a transations = a == ((year . datas) transations)
@@ -24,7 +26,6 @@ filterPorAnoMes year month = do
 isReceitaOuDespesa t = not (elem "APLICACAO" (tipos t)  || elem "VALOR_APLICACAO" (tipos t))
 
 -- Verificando se é uma receita
-
 isReceita t = (isReceitaOuDespesa t) && (valor t) >= 0
 
 -- Verificando se é uma despesa
@@ -32,12 +33,12 @@ isDespesa t = (isReceitaOuDespesa t) && (valor t) < 0
 
 -- Removendo a transação SALDO_CORRENTE
 
-
+-- Retorna receita
 getReceitas ano mes =  do
     transations <- (filterPorAnoMes ano mes)
     return (drop 1 (filter isReceita transations))
 
-
+-- Retorna despesas isExpense
 getDespesas ano mes =  do
     transations <- (filterPorAnoMes ano mes)
     return (drop 1 (filter isDespesa transations))
@@ -102,4 +103,51 @@ auxMediaDebitoAno ano = do
    return ((sum total) / meses)
    where 
         meses = 12
+
+
+-- Calcular a média das sobras em determinado ano
+getMediaSobrasAno ano = (auxMediaSobrasAno ano)
+
+auxMediaSobrasAno ano = do
+   total <- sequence (map(calculaSaldoFinalAnoMes ano) [1..12])
+   return ((sum total) / meses)
+   where 
+        meses = 12
+
+
+
+
+-- Retornar o fluxo de caixa de determinado mês/ano. 
+-- O fluxo de caixa nada mais é do que uma lista contendo pares (dia,saldoFinalDoDia). 
+
+getFluxo year month = do
+    expenses <- (getDespesas year month)
+    incomes <- (getReceitas year month)
+    return (_getCashFlow (ordenaDecrescente (expenses ++ incomes)))
+
+_getCashFlow transations = map sumDayFlow (groupBy diaIgual transations)
+
+sumDayFlow transations = (((dayOfMonth . datas) (transations !! 0)) , (sum (map valor transations)))
+
+
+diaIgual tran1 tran2 = result
+    where 
+        result = ((dayOfMonth . datas) tran1) == ((dayOfMonth . datas) tran2)
+
+
+-- Ordena uma lista de Transacao por dia
+ordenaDecrescente [] = []
+ordenaDecrescente (x:xs) = (ordenaDecrescente dir) ++ [x] ++ (ordenaDecrescente esq)
+    where 
+        esq = filter (menor x) xs
+        dir =  filter (maior x) xs
+
+menor p t2 = result
+   where
+      result = ((dayOfMonth . datas) p) > ((dayOfMonth . datas) t2)
+
+maior p t2 = result
+   where
+      result = ((dayOfMonth . datas) p) <= ((dayOfMonth . datas) t2)
+
 
