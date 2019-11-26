@@ -58,15 +58,15 @@ const functions = {
 
 // Interface
 
-filterTransactionByYear = (year) => functions.filterTransaction((e) => functions.filterByYearAndMonth(year, null, e));
-filterTransactionByYearAndMonth = (year, month) => functions.filterTransaction((e) => functions.filterByYearAndMonth(year, month, e));
-filterIncomes = (year, month) => functions.filterIncomes(filterTransactionByYearAndMonth(year, month));
-filterExpenses = (year, month) => functions.filterExpenses(filterTransactionByYearAndMonth(year, month));
-getOver = (year, month) => functions.getOver(filterTransactionByYearAndMonth(year, month));
-getFinalBalance = (year, month) => functions.getFinalBalance(filterTransactionByYearAndMonth(year, month));
-getMaxBalance = (year, month) => functions.getMaxOrMinBalance(filterTransactionByYearAndMonth(year, month), (a, b) => a > b),
-getMinBalance = (year, month) => functions.getMaxOrMinBalance(filterTransactionByYearAndMonth(year, month), (a, b) => a < b),
-getIncomesAverage = (year) => functions.getIncomesAverage(filterTransactionByYear(year));
-getExpensesAverage = (year) => functions.getExpensesAverage(filterTransactionByYear(year));
-getOversAverage = (year) => functions.getOversAverage(filterTransactionByYear(year));
-getCashFlow = (year, month) => functions.getCashFlow(filterTransactionByYearAndMonth(year, month));
+export const filterTransactionByYear = (year) => functions.filterTransaction((e) => functions.filterByYearAndMonth(year, null, e));
+export const filterTransactionByYearAndMonth = (year, month) => functions.filterTransaction((e) => functions.filterByYearAndMonth(year, month, e));
+export const filterIncomes = (year, month) => functions.sum(functions.filterIncomes(filterTransactionByYearAndMonth(year, month)));
+export const filterExpenses = (year, month) => functions.sum(functions.filterExpenses(filterTransactionByYearAndMonth(year, month)));
+export const getOver = (year, month) => functions.getOver(filterTransactionByYearAndMonth(year, month));
+export const getFinalBalance = (year, month) => functions.getFinalBalance(filterTransactionByYearAndMonth(year, month));
+export const getMaxBalance = (year, month) => functions.getMaxOrMinBalance(filterTransactionByYearAndMonth(year, month), (a, b) => a > b); 
+export const getMinBalance = (year, month) => functions.getMaxOrMinBalance(filterTransactionByYearAndMonth(year, month), (a, b) => a < b);
+export const getIncomesAverage = (year) => functions.getIncomesAverage(filterTransactionByYear(year));
+export const getExpensesAverage = (year) => functions.getExpensesAverage(filterTransactionByYear(year));
+export const getOversAverage = (year) => functions.getOversAverage(filterTransactionByYear(year));
+export const getCashFlow = (year, month) => functions.getCashFlow(filterTransactionByYearAndMonth(year, month));

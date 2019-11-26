@@ -1,15 +1,74 @@
 <!DOCTYPE html>
 <html>
+
 <head>
     <meta charset='utf-8'>
     <meta http-equiv='X-UA-Compatible' content='IE=edge'>
     <title>Projeto Funcional</title>
     <meta name='viewport' content='width=device-width, initial-scale=1'>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/fetch/3.0.0/fetch.js"
-    integrity="sha256-E6Qjbpri3VCWu8GKOk5xCaZIJnvKhIni4/mQMm2kCE8=" crossorigin="anonymous"></script>
-    <script src='transacoes.js'></script>
+        integrity="sha256-E6Qjbpri3VCWu8GKOk5xCaZIJnvKhIni4/mQMm2kCE8=" crossorigin="anonymous"></script>
+    <script type="module" src='transacoes.js'></script>
 </head>
+
+<style>
+    body {
+        background-color: #ccc;
+    }
+
+    .flexbox{
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+    }
+
+    .container {
+        background-color: white;
+        flex:1;
+        height: 400px;
+        margin: 10px;
+    }
+
+    .header {
+        background-color: dimgrey;
+        padding: 10px;
+        color: white;
+    }
+</style>
+
+
 <body>
-    
+
+    <div class="flexbox">
+
+        <div class="container">
+            <div class="header">
+                Transações
+            </div>
+
+            <div>
+
+            </div>
+        </div>
+
+        <div class="container">
+            <div class="header">
+                Transações
+            </div>
+
+            <div id="transacoes">
+            </div>
+        </div>
+
+    </div>
+
 </body>
+
+<script>
+        var transacoes = filterTransactionByYear(2019);
+        document.getElementById('transacoes').innerText('iu');
+        </script>
+
 </html>
