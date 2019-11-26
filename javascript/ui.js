@@ -11,12 +11,12 @@ const atualizaDados = () => {
     ano !== "" && mes !== "" && mapeiaDadosFluxoCaixa(ano, mes);
     mapeiaRelatorios(ano, mes);
 
-    controleDeExibicao(ano,mes);
+    controleDeExibicao(ano, mes);
 
 
 }
 
-const controleDeExibicao = (ano,mes) => {
+const controleDeExibicao = (ano, mes) => {
     document.getElementById("relatorios-mes").style.display = (ano !== "" && mes !== "") ? "flex" : "none";
     document.getElementById("relatorios-ano").style.display = (ano !== "" && mes === "") ? "flex" : "none";
     document.getElementById("fluxo-caixa").style.display = (ano !== "" && mes !== "") ? "flex" : "none";
@@ -71,23 +71,33 @@ const mapeiaRelatorios = (ano, mes) => {
 
 const mapeiaDadosHistoricoTransacoes = (ano, mes) => {
 
-    document.getElementById("transacoes").innerText = (mes !== "" ? filterTransactionByYearAndMonth(ano, mes) : filterTransactionByYear(ano)).
+    document.getElementById("transacoes").innerHTML = (mes !== "" ? filterTransactionByYearAndMonth(ano, mes) : filterTransactionByYear(ano)).
 
         map((transaction) => {
             const date = transaction.datas;
 
-            return `Título: ${transaction.textoIdentificador} \n` +
-                ` Descrição: ${transaction.descricao} \n` +
-                ` Data: ${date.dayOfMonth}/${date.month + 1}/${date.year} - ${date.hourOfDay} : ${date.minute} \n` +
-                ` Valor: R$ ${transaction.valor} \n` +
-                ` Tipos da Transação: ${transaction.tipos} \n` +
-                ` Número Doc: ${transaction.numeroDOC} \n \n`
+            return `<li class="list">` +
+                `<h2 class="list-text"> ${transaction.textoIdentificador} </h2>` +
+                `<h4 class="list-text">Descrição: ${transaction.descricao} </h4>` +
+                `<h4 class="list-text">Data: ${date.dayOfMonth}/${date.month + 1}/${date.year} - ${date.hourOfDay} : ${date.minute} </h4>` +
+                `<h4 class="list-text">Valor: R$ ${transaction.valor} <h4>` +
+                `<h4 class="list-text">Tipos da Transação: ${transaction.tipos}</h4>` +
+                `<h4 class="list-text">Número Doc: ${transaction.numeroDOC}</h4>` +
+                `</li>`
 
-        });
+        }).join("");
 }
 
 
 const mapeiaDadosFluxoCaixa = (ano, mes) => {
     const dados = Object.values(getCashFlow(ano, mes));
-    document.getElementById("fluxo").innerText = (ano !== "" && mes !== "" && dados) ? dados.map((flow) => `Dia: ${flow.dia} \n Saldo final do dia: R$ ${flow.saldoFinalDoDia.toFixed(4)} \n \n`) : "";
+    document.getElementById("fluxo").innerHTML = (ano !== "" && mes !== "" && dados) ? 
+    dados.map((flow) => 
+    `<li class="list-fluxo"> 
+    <span class="dia">Dia: ${String(flow.dia).length === 1 ? 0 + String(flow.dia) : flow.dia}</span>
+    <span class="list-text-fluxo">Saldo final do dia: R$ ${flow.saldoFinalDoDia.toFixed(2)}</span>
+    </li>
+    `).join("")
+    
+    : "";
 }

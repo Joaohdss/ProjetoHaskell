@@ -35,7 +35,7 @@ body {
     width: 100%;
     padding: 10px;
     color: white;
-    position: sticky;
+    font-family: 'Anton', sans-serif;
 }
 
 #transacoes {
@@ -62,8 +62,8 @@ body {
     display: none;
     flex-direction: row;
     margin-top: 20px;
+    
 }
-
 
 #relatorios-ano {
     display: none;
@@ -95,4 +95,48 @@ body {
 .text-box-relatorio {
     color: white;
     text-align: center;
+}
+
+.list{
+    list-style-type: none;
+    background-color: white;
+    -webkit-box-shadow: 5px 5px 15px 5px #E0E0E0; 
+    box-shadow: 5px 5px 15px 5px #E0E0E0;
+    height: 230px;
+    flex-direction: column;
+    align-items: flex-start;
+
+}
+
+.list-fluxo{
+    list-style-type: none;
+    background-color: white;
+    -webkit-box-shadow: 5px 5px 15px 5px #E0E0E0; 
+    box-shadow: 5px 5px 15px 5px #E0E0E0;
+    height: 30px;
+    margin-bottom: 10px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+}
+
+.list h2{
+    padding-top: 20px;
+}
+
+.list-text{
+    padding-left: 10px;    color: grey;
+    margin-left: 10px;
+    font-family: 'Jaldi', sans-serif;
+    line-height: 80%;
+}
+
+.list-text-fluxo{
+    color: grey;
+    font-family: 'Jaldi', sans-serif;
+}
+
+.dia{
+    color: grey;
+    font-family: 'Jaldi', sans-serif;    
 }
