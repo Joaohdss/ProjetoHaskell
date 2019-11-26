@@ -3,13 +3,12 @@ var data = [];
 const getData = async () => {
     const res = await fetch('./transacoes.json', { method: 'GET', mode: 'no-cors' });
     res.json().then(res => data = res);
-};
 
-getData();
+};
 
 const functions = {
     filterTransaction: (filter) => data.filter(filter),
-    filterByYearAndMonth: (year, month, transaction) => transaction.datas.year === year && (month ? transaction.datas.month === month : true),
+    filterByYearAndMonth: (year, month, transaction) => transaction.datas.year === year && (month !== "" ? transaction.datas.month === month : true),
     isIncomeOrExpense: (transaction) => !transaction.tipos.includes("SALDO_CORRENTE") && !transaction.tipos.includes("APLICACAO") && !transaction.tipos.includes("VALOR_APLICACAO"),
     isIncome: (transaction) => functions.isIncomeOrExpense(transaction) && transaction.valor > 0,
     isExpense: (transaction) => functions.isIncomeOrExpense(transaction) && transaction.valor < 0,
@@ -37,36 +36,46 @@ const functions = {
 
     getCashFlow: (data) => {
 
-        const dataFiltered = data.filter(functions.isIncomeOrExpense);
-        const cashFlow = dataFiltered.reduce((acumulator, transaction) => {
+        const initialBalance = functions.getInitialBalance(data);
 
-            const date = transaction.datas;
-            const balance = acumulator.balance + transaction.valor;
-            const days = { ...acumulator.days };
-            days[date.dayOfMonth] = { dia: date.dayOfMonth, saldoFinalDoDia: balance };
+        if (data.length > 0) {
 
-            return { balance: balance, days: days };
-        }, { balance: functions.getInitialBalance(data).valor, days: {} });
+            const dataFiltered = data.filter(functions.isIncomeOrExpense);
+            const cashFlow = dataFiltered.reduce((acumulator, transaction) => {
+
+                const date = transaction.datas;
+                const balance = acumulator.balance + transaction.valor;
+                const days = { ...acumulator.days };
+                days[date.dayOfMonth] = { dia: date.dayOfMonth, saldoFinalDoDia: balance };
+
+                return { balance: balance, days: days };
+            }, { balance: initialBalance.valor, days: { 1: { dia: 1, saldoFinalDoDia: initialBalance.valor } } });
 
 
-        return cashFlow.days;
+            return cashFlow.days;
+        }
+
+        else {
+            return {};
+        }
 
     }
-
 }
 
 
-// Interface
+// Facade
 
-export const filterTransactionByYear = (year) => functions.filterTransaction((e) => functions.filterByYearAndMonth(year, null, e));
-export const filterTransactionByYearAndMonth = (year, month) => functions.filterTransaction((e) => functions.filterByYearAndMonth(year, month, e));
-export const filterIncomes = (year, month) => functions.sum(functions.filterIncomes(filterTransactionByYearAndMonth(year, month)));
-export const filterExpenses = (year, month) => functions.sum(functions.filterExpenses(filterTransactionByYearAndMonth(year, month)));
-export const getOver = (year, month) => functions.getOver(filterTransactionByYearAndMonth(year, month));
-export const getFinalBalance = (year, month) => functions.getFinalBalance(filterTransactionByYearAndMonth(year, month));
-export const getMaxBalance = (year, month) => functions.getMaxOrMinBalance(filterTransactionByYearAndMonth(year, month), (a, b) => a > b); 
-export const getMinBalance = (year, month) => functions.getMaxOrMinBalance(filterTransactionByYearAndMonth(year, month), (a, b) => a < b);
-export const getIncomesAverage = (year) => functions.getIncomesAverage(filterTransactionByYear(year));
-export const getExpensesAverage = (year) => functions.getExpensesAverage(filterTransactionByYear(year));
-export const getOversAverage = (year) => functions.getOversAverage(filterTransactionByYear(year));
-export const getCashFlow = (year, month) => functions.getCashFlow(filterTransactionByYearAndMonth(year, month));
+const filterTransactionByYear = (year) => functions.filterTransaction((e) => functions.filterByYearAndMonth(year, "", e));
+const filterTransactionByYearAndMonth = (year, month) => functions.filterTransaction((e) => functions.filterByYearAndMonth(year, month, e));
+const filterIncomes = (year, month) => functions.sum(functions.filterIncomes(filterTransactionByYearAndMonth(year, month)));
+const filterExpenses = (year, month) => functions.sum(functions.filterExpenses(filterTransactionByYearAndMonth(year, month)));
+const getOver = (year, month) => functions.getOver(filterTransactionByYearAndMonth(year, month));
+const getFinalBalance = (year, month) => functions.getFinalBalance(filterTransactionByYearAndMonth(year, month));
+const getMaxBalance = (year, month) => functions.getMaxOrMinBalance(filterTransactionByYearAndMonth(year, month), (a, b) => a > b);
+const getMinBalance = (year, month) => functions.getMaxOrMinBalance(filterTransactionByYearAndMonth(year, month), (a, b) => a < b);
+const getIncomesAverage = (year) => functions.getIncomesAverage(filterTransactionByYear(year));
+const getExpensesAverage = (year) => functions.getExpensesAverage(filterTransactionByYear(year));
+const getOversAverage = (year) => functions.getOversAverage(filterTransactionByYear(year));
+const getCashFlow = (year, month) => functions.getCashFlow(filterTransactionByYearAndMonth(year, month));
+
+getData();
