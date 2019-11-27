@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset='utf-8'>
+    <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+  <link href="https://fonts.googleapis.com/css?family=Anton|Jaldi&display=swap" rel="stylesheet">
+    <link href="styles.css" rel="stylesheet" type="text/css">
+    <title>Projeto Funcional</title>
+    <meta name='viewport' content='width=device-width, initial-scale=1'>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fetch/2.0.3/fetch.js"></script>
+    <script src='transacoes.js'></script>
+    <script src='ui.js'></script>
+</head>
+
+<body>
+
+    <div id="selects">
+        <select class="select" id="select-mes" onchange="atualizaDados()">
+            <option value="">Mês</option>
+            <option value="0">Janeiro</option>
+            <option value="1">Fevereiro</option>
+            <option value="2">Março</option>
+            <option value="3">Abril</option>
+            <option value="4">Maio</option>
+            <option value="5">Junho</option>
+            <option value="6">Julho</option>
+            <option value="7">Agosto</option>
+            <option value="8">Setembro</option>
+            <option value="9">Outubro</option>
+            <option value="10">Novembro</option>
+            <option value="11">Dezembro</option>
+        </select>
+
+        <select class="select" id="select-ano" onchange="atualizaDados()">
+            <option value="">Ano</option>
+            <option value="2017">2017</option>
+            <option value="2018">2018</option>
+            <option value="2019">2019</option>
+        </select>
+    </div>
+
+    <div id="transacoes-box">
+
+        <div id="lista-transacoes">
+            <div class="header">
+                Transações
+            </div>
+
+            <div class="container">
+                <div id="transacoes">
+                </div>
+            </div>
+        </div>
+
+        <div id="fluxo-caixa">
+            <div class="header">
+                Fluxo de Caixa
+            </div>
+
+            <div class="container">
+                <div id="fluxo">
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+
+    <div id="relatorios-mes">
+        <div id="lucros">
+            <h3 class="text-box-relatorio">Lucros</h3>
+            <h3 class="text-box-relatorio" id="valor-lucro">-</h3>
+        </div>
+
+        <div id="despesas">
+            <h3 class="text-box-relatorio">Despesas</h3>
+            <h3 class="text-box-relatorio" id="valor-despesa">-</h3>
+        </div>
+
+        <div class="relatorios">
+            <h3 class="text-box-relatorio">Sobras</h3>
+            <h3 class="text-box-relatorio" id="valor-sobra">-</h3>
+        </div>
+
+        <div class="relatorios">
+            <h3 class="text-box-relatorio">Saldo Final</h3>
+            <h3 class="text-box-relatorio" id="valor-saldo-final">-</h3>
+        </div>
+
+        <div class="relatorios">
+            <h3 class="text-box-relatorio">Saldo Máximo</h3>
+            <h3 class="text-box-relatorio" id="valor-saldo-maximo">-</h3>
+        </div>
+
+        <div class="relatorios">
+            <h3 class="text-box-relatorio">Saldo Mínimo</h3>
+            <h3 class="text-box-relatorio" id="valor-saldo-minimo">-</h3>
+        </div>
+    </div>
+
+    <div id="relatorios-ano">
+        <div id="lucros">
+            <h3 class="text-box-relatorio">Média Lucros</h3>
+            <h3 class="text-box-relatorio" id="media-lucro">-</h3>
+        </div>
+
+        <div id="despesas">
+            <h3 class="text-box-relatorio">Média Despesas</h3>
+            <h3 class="text-box-relatorio" id="media-despesa">-</h3>
+        </div>
+
+        <div class="relatorios">
+            <h3 class="text-box-relatorio">Média Sobras</h3>
+            <h3 class="text-box-relatorio" id="media-sobra">-</h3>
+        </div>
+    </div>
+
+
+</body>
+
+
+</html>

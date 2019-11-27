@@ -1,0 +1,142 @@
+body {
+    background-color: #ccc;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+#lista-transacoes {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 50%;
+    margin-right: 10px;
+}
+
+
+#fluxo-caixa {
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    width: 30%;
+}
+
+.container {
+    background-color: white;
+    height: 400px;
+    width: 100%;
+    padding: 10px;
+    overflow: auto;
+}
+
+.header {
+    background-color: dimgrey;
+    width: 100%;
+    padding: 10px;
+    color: white;
+    font-family: 'Anton', sans-serif;
+}
+
+#transacoes {
+    padding: 10px;
+}
+
+#transacoes-box {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+}
+
+.select {
+    width: 100px;
+    height: 40px;
+}
+
+#selects {
+    margin-bottom: 10px;
+}
+
+#relatorios-mes {
+    display: none;
+    flex-direction: row;
+    margin-top: 20px;
+    
+}
+
+#relatorios-ano {
+    display: none;
+    flex-direction: row;
+    margin-top: 20px;
+}
+
+#lucros {
+    width: 140px;
+    height: 100px;
+    background-color: green;
+    margin-right: 5px;
+}
+
+#despesas {
+    width: 140px;
+    height: 100px;
+    background-color: red;
+    margin-right: 5px;
+}
+
+.relatorios {
+    width: 140px;
+    height: 100px;
+    background-color: grey;
+    margin-right: 5px;
+}
+
+.text-box-relatorio {
+    color: white;
+    text-align: center;
+}
+
+.list{
+    list-style-type: none;
+    background-color: white;
+    -webkit-box-shadow: 5px 5px 15px 5px #E0E0E0; 
+    box-shadow: 5px 5px 15px 5px #E0E0E0;
+    height: 230px;
+    flex-direction: column;
+    align-items: flex-start;
+
+}
+
+.list-fluxo{
+    list-style-type: none;
+    background-color: white;
+    -webkit-box-shadow: 5px 5px 15px 5px #E0E0E0; 
+    box-shadow: 5px 5px 15px 5px #E0E0E0;
+    height: 30px;
+    margin-bottom: 10px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+}
+
+.list h2{
+    padding-top: 20px;
+}
+
+.list-text{
+    padding-left: 10px;    color: grey;
+    margin-left: 10px;
+    font-family: 'Jaldi', sans-serif;
+    line-height: 80%;
+}
+
+.list-text-fluxo{
+    color: grey;
+    font-family: 'Jaldi', sans-serif;
+}
+
+.dia{
+    color: grey;
+    font-family: 'Jaldi', sans-serif;    
+}
