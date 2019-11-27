@@ -94,7 +94,7 @@ balances (x:xs) = (x + (sum xs):(balances xs))
 -- Calcular a média das receitas em determinado ano
 getMediaCreditoAno ano = (auxMediaCreditoAno ano)
 auxMediaCreditoAno ano = do
-   total <- sequence (map(calculaCredito ano) [1..12])
+   total <- sequence (map(calculaCredito ano) [0..11])
    return ((sum total) / meses)
    where 
         meses = 12
