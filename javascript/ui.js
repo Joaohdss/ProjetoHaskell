@@ -79,7 +79,7 @@ const mapeiaDadosHistoricoTransacoes = (ano, mes) => {
             return `<li class="list">` +
                 `<h2 class="list-text"> ${transaction.textoIdentificador} </h2>` +
                 `<h4 class="list-text">Descrição: ${transaction.descricao} </h4>` +
-                `<h4 class="list-text">Data: ${date.dayOfMonth}/${date.month + 1}/${date.year} - ${date.hourOfDay} : ${date.minute} </h4>` +
+                `<h4 class="list-text">Data: ${date.dayOfMonth}/${date.month + 1}/${date.year} - ${date.hourOfDay} : ${date.minute}hrs </h4>` +
                 `<h4 class="list-text">Valor: R$ ${transaction.valor} <h4>` +
                 `<h4 class="list-text">Tipos da Transação: ${transaction.tipos}</h4>` +
                 `<h4 class="list-text">Número Doc: ${transaction.numeroDOC}</h4>` +
