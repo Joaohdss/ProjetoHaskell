@@ -8,7 +8,7 @@ const getData = async () => {
 
 const functions = {
     filterTransaction: (filter) => data.filter(filter),
-    filterByYearAndMonth: (year, month, transaction) => transaction.datas.year === year && (month !== "" ? transaction.datas.month === month : true),
+    filterByYearAndMonth: (year, month, transaction) => transaction ? transaction.datas.year === year && (month !== "" ? transaction.datas.month === month : true) : false,
     isIncomeOrExpense: (transaction) => !transaction.tipos.includes("SALDO_CORRENTE") && !transaction.tipos.includes("APLICACAO") && !transaction.tipos.includes("VALOR_APLICACAO"),
     isIncome: (transaction) => functions.isIncomeOrExpense(transaction) && transaction.valor > 0,
     isExpense: (transaction) => functions.isIncomeOrExpense(transaction) && transaction.valor < 0,
@@ -26,13 +26,20 @@ const functions = {
     },
         { balance: functions.getInitialBalance(data).valor, maxOrMinBalance: functions.getInitialBalance(data).valor }),
 
-    getFilterAverage: (data, filter) => {
-        const dataFiltered = filter(data);
-        return functions.sum(dataFiltered) / dataFiltered.length;
+    range: (start, end, length = end - start) => Array.from({ length }, (_, i) => start + i),
+
+    getMonths: (year) => [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11].map(month => filterTransactionByYearAndMonth(year, month).length > 0),
+
+    getIncomesOrExpenseAverage: (year, filter) => {
+        const data = functions.getMonths(year).map((month, i) => month ? filter(year, i) : null).filter(average => average !== null);
+        const sum = data.reduce((a, b) => a + b, 0)
+        return sum / data.length;
     },
-    getIncomesAverage: (data) => functions.getFilterAverage(data, functions.filterIncomes),
-    getExpensesAverage: (data) => functions.getFilterAverage(data, functions.filterExpenses),
-    getOversAverage: (data) => functions.getIncomesAverage(data) + functions.getExpensesAverage(data),
+    getIncomesAverage: (year) => functions.getIncomesOrExpenseAverage(year, filterIncomes),
+
+    getExpensesAverage: (year) => functions.getIncomesOrExpenseAverage(year, filterExpenses),
+
+    getOversAverage: (year) => functions.getIncomesAverage(year) + functions.getExpensesAverage(year),
 
     getCashFlow: (data) => {
 
@@ -73,9 +80,9 @@ const getOver = (year, month) => functions.getOver(filterTransactionByYearAndMon
 const getFinalBalance = (year, month) => functions.getFinalBalance(filterTransactionByYearAndMonth(year, month));
 const getMaxBalance = (year, month) => functions.getMaxOrMinBalance(filterTransactionByYearAndMonth(year, month), (a, b) => a > b);
 const getMinBalance = (year, month) => functions.getMaxOrMinBalance(filterTransactionByYearAndMonth(year, month), (a, b) => a < b);
-const getIncomesAverage = (year) => functions.getIncomesAverage(filterTransactionByYear(year));
-const getExpensesAverage = (year) => functions.getExpensesAverage(filterTransactionByYear(year));
-const getOversAverage = (year) => functions.getOversAverage(filterTransactionByYear(year));
+const getIncomesAverage = (year) => functions.getIncomesAverage(year);
+const getExpensesAverage = (year) => functions.getExpensesAverage(year);
+const getOversAverage = (year) => functions.getOversAverage(year);
 const getCashFlow = (year, month) => functions.getCashFlow(filterTransactionByYearAndMonth(year, month));
 
 getData();
