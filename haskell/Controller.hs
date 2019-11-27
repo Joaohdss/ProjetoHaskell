@@ -1,3 +1,28 @@
+module Controller (
+ filterAno,
+ filterAnoMes,
+ isReceiptOrDebt,
+ getCreditosDebitos,
+ ehReceita,
+ ehDespesa,
+ getDebitos,
+ getCreditos,
+ calculaCredito,
+ calculaDebito,
+ calculaSobra,
+ calculaSaldoFinalAnoMes,
+ getSaldoMax,
+ getSaldoMin,
+ balances,
+ getMediaCreditoAno,
+ getMediaDebitoAno,
+ getMediaSobrasAno,
+ getFluxo
+
+
+)
+where
+
 import Tipos
 import Data.List (groupBy)
 import ParserJson
@@ -69,7 +94,7 @@ calculaSaldoFinalAnoMes ano mes = do
     remainer <- (calculaSobra ano mes)
     return (baseBalance + remainer)
 
--- Calcular o saldo máximo atingido em determinado ano e mês
+
 getSaldoMax ano mes = do
     balanco <- (initialBalance ano mes)
     transations <- (getCreditosDebitos ano mes)
